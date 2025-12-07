@@ -1,3 +1,8 @@
 name = "gta-north-backend-admin"
 main = "src/worker.js"
 compatibility_date = "2025-12-07"
+
+[[d1_databases]]
+binding = "DB"                       # how we refer to it in code: env.DB
+database_name = "gta_north_catalog"  # EXACT database name
+database_id = "PASTE-YOUR-D1-DATABASE-ID-HERE"
