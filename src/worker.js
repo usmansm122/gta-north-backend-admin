@@ -151,7 +151,7 @@ export default {
     const url = new URL(request.url);
     const { pathname } = url;
 
-    // Simple JSON health endpoint for testing from tools / scripts
+    // Simple JSON health endpoint
     if (pathname === "/api/health") {
       return new Response(
         JSON.stringify({
@@ -165,7 +165,25 @@ export default {
       );
     }
 
-    // Admin panel UI (static for now)
+    // Test that D1 binding works
+    if (pathname === "/api/test-db") {
+      try {
+        const row = await env.DB.prepare("SELECT datetime('now') as now;").first();
+        return new Response(JSON.stringify({ ok: true, row }), {
+          headers: { "content-type": "application/json" },
+        });
+      } catch (err) {
+        return new Response(
+          JSON.stringify({ ok: false, error: String(err) }),
+          {
+            status: 500,
+            headers: { "content-type": "application/json" },
+          }
+        );
+      }
+    }
+
+    // Admin panel UI
     if (pathname === "/admin") {
       return new Response(ADMIN_HTML, {
         headers: { "content-type": "text/html; charset=utf-8" },
@@ -174,7 +192,7 @@ export default {
 
     // Default root response
     return new Response(
-      "GTA North Backend + Admin – Worker online (try /admin or /api/health)",
+      "GTA North Backend + Admin – Worker online (try /admin, /api/health or /api/test-db)",
       {
         headers: { "content-type": "text/plain" },
       }
